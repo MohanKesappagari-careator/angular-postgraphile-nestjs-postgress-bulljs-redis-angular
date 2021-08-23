@@ -191,7 +191,6 @@ export class StudentTableComponent implements OnInit {
   // remove confirmation dialog
   public confirmRemove(shouldRemove: boolean): void {
     this.removeConfirmationSubject.next(shouldRemove);
-    console.log(this.itemToRemove.id);
     this.apollo
       .mutate({
         mutation: DELETE,
@@ -348,53 +347,42 @@ export class StudentTableComponent implements OnInit {
       .then((data) => console.log(data))
       .catch((e) => console.log(e));
     (async () => {
-      let channel = socket.subscribe('student');
-      console.log(channel, '++++++++');
+      let channel: any = socket.subscribe('student');
+      console.log(channel, 'complpted');
       for await (let data of channel) {
         if (data) {
           console.log(data);
 
           this.notificationService.show({
-            content: `Uploaded entry`,
+            content: `Job Completed`,
             hideAfter: 3000,
             position: { horizontal: 'center', vertical: 'top' },
             animation: { type: 'fade', duration: 900 },
             type: { style: 'success', icon: true },
           });
           await this.fetchData();
+          channel = socket.killChannel('student');
         }
       }
-      await socket.unsubscribe('student');
+
+      console.log(channel, 'Trying');
     })();
     (async () => {
-      let channel = socket.subscribe('studentF');
+      let channel: any = socket.subscribe('studentF');
       for await (let data of channel) {
         if (data) {
           this.notificationService.show({
-            content: `Uploaded Rejected`,
+            content: `Job fail`,
             hideAfter: 3000,
             position: { horizontal: 'center', vertical: 'top' },
             animation: { type: 'fade', duration: 900 },
             type: { style: 'error', icon: true },
           });
+          await this.fetchData();
+          channel = socket.killChannel('studentF');
         }
       }
-      await socket.unsubscribe('studentF');
-    })();
-    (async () => {
-      let channel = socket.subscribe('studentE');
-      for await (let data of channel) {
-        if (data) {
-          this.notificationService.show({
-            content: `DataBase errro`,
-            hideAfter: 3000,
-            position: { horizontal: 'center', vertical: 'top' },
-            animation: { type: 'fade', duration: 900 },
-            type: { style: 'info', icon: true },
-          });
-        }
-      }
-      await socket.unsubscribe('studentE');
+      console.log(channel, 'fail');
     })();
 
     // query.then(() => {

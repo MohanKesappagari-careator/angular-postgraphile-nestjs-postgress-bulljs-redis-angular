@@ -37,13 +37,6 @@ export class ExcelUploadService {
     }
     console.log('_______', data);
     this.queue.add('create', data);
-    // data.map((value) => {
-    //   this.queue.add('create', {
-    //     name: value.name,
-    //     email: value.email,
-    //     dateofbirth: value.dateofbirth,
-    //   });
-    // });
   }
 
   findAll() {
