@@ -36,7 +36,7 @@ export class ExcelUploadService {
       });
     }
     console.log('_______', data);
-    this.queue.add('create', data);
+    this.queue.add('create', data, { attempts: 2, backoff: 1000 });
   }
 
   findAll() {
